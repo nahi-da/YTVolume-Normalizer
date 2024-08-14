@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .parent {
+            width: fit-content;
+            margin: auto;
+        }
+
+        .control-area {
+            margin-bottom: 10px;
+        }
+
+        .label_name {
+            display: inline-block;
+            width: 8em;
+            vertical-align: top;
+        }
+
+        .label_value {
+            display: inline-block;
+            width: 2em;
+            vertical-align: top;
+            text-align: end;
+        }
+
+        input {
+            width: 150px;
+        }
+
+        progress {
+            width: 150px;
+            margin: 2px;
+        }
+
+        .video_container {
+            width: 100%;
+            text-align:center;
+        }
+
+        video {
+            width: 400px;
+        }
+
+    </style>
+</head>
+<body>
+    <p id="ready_state">wait...</p>
+    <div class="parent">
+        <div class="control-area">
+            <label for="toggle" class="label_name" id="toggle_name">Toggle</label>
+            <input type="checkbox" id="toggle" name="toggle"/>
+        </div>
+        <div class="control-area">
+            <label for="volume" class="label_name" id="volume_name">Volume</label>
+            <input type="range" id="volume" name="volume" min="0" max="100" value="50" />
+            <label for="volume" class="label_value" id="volume_val"></label>
+        </div>
+        <div class="control-area">
+            <label for="threshold" class="label_name" id="threshold_name">Threshold</label>
+            <input type="range" id="threshold" name="threshold" min="-100" max="0" value="-50"/>
+            <label for="threshold" class="label_value" id="threshold_val"></label>
+        </div>
+        <div class="control-area">
+            <label for="knee" class="label_name" id="knee_name">Knee</label>
+            <input type="range" id="knee" name="knee" min="0" max="40"/>
+            <label for="knee" class="label_value" id="knee_val"></label>
+        </div>
+        <div class="control-area">
+            <label for="ratio" class="label_name" id="ratio_name">Ratio</label>
+            <input type="range" id="ratio" name="ratio" min="1" max="20"/>
+            <label for="ratio" class="label_value" id="ratio_val"></label>
+        </div>
+        <div class="control-area">
+            <label for="attack" class="label_name" id="attack_name">Attack</label>
+            <input type="range" id="attack" name="attack" min="0" max="1" step="0.01"/>
+            <label for="attack" class="label_value" id="attack_val"></label>
+        </div>
+        <div class="control-area">
+            <label for="release" class="label_name" id="release_name">Release</label>
+            <input type="range" id="release" name="release" min="0" max="1" step="0.01"/>
+            <label for="release" class="label_value" id="release_val"></label>
+        </div>
+        <div class="control-area">
+            <label for="reduction" class="label_name" id="reduction_name">Reduction</label>
+            <progress id="reduction" name="reduction" min="0" max="100"></progress>
+            <label for="reduction" class="label_value" id="reduction_val"></label>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>

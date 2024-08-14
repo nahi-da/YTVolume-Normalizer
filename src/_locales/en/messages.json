@@ -1,0 +1,11 @@
+{
+  "extensionName": {
+    "message": "YTVolume Normalizer",
+    "description": "Name of the extension."
+  },
+
+  "extensionDescription": {
+    "message": "Normalize the volume of YouTube videos.\nCurrently only supports embedded players.\nWe plan to support normal players in the future.",
+    "description": "Description of the extension."
+  }
+}
