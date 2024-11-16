@@ -3,7 +3,8 @@ let popupOpen = false;
 
 if (localStorage.getItem("state") === null) {
     localStorage.setItem("state", true);
-    localStorage.setItem("gain", 0.8);
+    localStorage.setItem("input_gain", 1.0);
+    localStorage.setItem("output_gain", 1.0);
     localStorage.setItem("threshold", -30);
     localStorage.setItem("knee", 12);
     localStorage.setItem("ratio", 8);
@@ -35,7 +36,8 @@ browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === "require_params") {
         if (localStorage.getItem("state") === null) {
             localStorage.setItem("state", true);
-            localStorage.setItem("gain", 0.8);
+            localStorage.setItem("input_gain", 1.0);
+            localStorage.setItem("output_gain", 1.0);
             localStorage.setItem("threshold", -30);
             localStorage.setItem("knee", 12);
             localStorage.setItem("ratio", 8);
@@ -43,7 +45,8 @@ browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
             localStorage.setItem("release", 0.25);
         }
         sendResponse({
-            gain: localStorage.getItem("gain"),
+            input_gain: localStorage.getItem("input_gain"),
+            output_gain: localStorage.getItem("output_gain"),
             threshold: localStorage.getItem("threshold"),
             knee: localStorage.getItem("knee"),
             ratio: localStorage.getItem("ratio"),

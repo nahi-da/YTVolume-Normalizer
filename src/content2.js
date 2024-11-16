@@ -24,6 +24,9 @@ class Normalizer {
     constructor(videoElem) {
         this.audioCtx = new AudioContext();
 
+        this.inputGainNode = this.audioCtx.createGain();
+        this.inputGainNode.gain.value = 1.0;
+
         this.compressor = this.audioCtx.createDynamicsCompressor();
         this.compressor.threshold.setValueAtTime(-50, this.audioCtx.currentTime);
         this.compressor.knee.setValueAtTime(20, this.audioCtx.currentTime);
@@ -31,11 +34,12 @@ class Normalizer {
         this.compressor.attack.setValueAtTime(0, this.audioCtx.currentTime);
         this.compressor.release.setValueAtTime(0.25, this.audioCtx.currentTime);
 
-        this.gainNode = this.audioCtx.createGain();
-        this.gainNode.gain.value = 0.5;
+        this.outputGainNode = this.audioCtx.createGain();
+        this.outputGainNode.gain.value = 1.0;
 
         this.setVideoElement(videoElem);
-        this.gainNode.connect(this.audioCtx.destination);
+        this.source.connect(this.inputGainNode);
+        this.outputGainNode.connect(this.audioCtx.destination);
         this.state = false;
     }
 
@@ -48,18 +52,18 @@ class Normalizer {
 
     enableCompressor() {
         if (this.source) {
-            this.source.disconnect();
-            this.source.connect(this.compressor);
-            this.compressor.connect(this.gainNode);
+            this.inputGainNode.disconnect();
+            this.inputGainNode.connect(this.compressor);
+            this.compressor.connect(this.outputGainNode);
             this.state = true;
         }
     }
 
     disableCompressor() {
         if (this.source) {
-            this.source.disconnect();
+            this.inputGainNode.disconnect();
             this.compressor.disconnect();
-            this.source.connect(this.gainNode);
+            this.inputGainNode.connect(this.outputGainNode);
             this.state = false;
         }
     }
@@ -76,7 +80,8 @@ var popup_closed = false;
             if (videoElem) {
                 var normalizer = new Normalizer(videoElem);
                 browser.runtime.sendMessage({type: "require_params"}).then(response => {
-                    normalizer.gainNode.gain.value = response.gain;
+                    normalizer.inputGainNode.gain.value = response.input_gain;
+                    normalizer.outputGainNode.gain.value = response.output_gain;
                     normalizer.compressor.threshold.setValueAtTime(response.threshold, normalizer.audioCtx.currentTime);
                     normalizer.compressor.knee.setValueAtTime(response.knee, normalizer.audioCtx.currentTime);
                     normalizer.compressor.ratio.setValueAtTime(response.ratio, normalizer.audioCtx.currentTime);
@@ -96,8 +101,11 @@ var popup_closed = false;
                     if (message.type === "disable_compressor") {
                         normalizer.disableCompressor();
                     }
-                    if (message.type === "set_gain") {
-                        normalizer.gainNode.gain.value = message.gain;
+                    if (message.type === "set_input_gain") {
+                        normalizer.inputGainNode.gain.value = message.input_gain;
+                    }
+                    if (message.type === "set_output_gain") {
+                        normalizer.outputGainNode.gain.value = message.output_gain;
                     }
                     if (message.type === "set_threshold") {
                         normalizer.compressor.threshold.setValueAtTime(message.threshold, normalizer.audioCtx.currentTime);
@@ -116,7 +124,8 @@ var popup_closed = false;
                     }
                     if (message.type === "get_value") {
                         sendResponse({
-                            gain: normalizer.gainNode.gain.value,
+                            input_gain: normalizer.inputGainNode.gain.value,
+                            output_gain: normalizer.outputGainNode.gain.value,
                             threshold: normalizer.compressor.threshold.value,
                             knee: normalizer.compressor.knee.value,
                             ratio: normalizer.compressor.ratio.value,
@@ -127,7 +136,8 @@ var popup_closed = false;
                         });
                     }
                     if (message.type === "setup") {
-                        normalizer.gainNode.gain.value = message.gain;
+                        normalizer.inputGainNode.gain.value = message.input_gain;
+                        normalizer.outputGainNode.gain.value = message.output_gain;
                         normalizer.compressor.threshold.setValueAtTime(message.threshold, normalizer.audioCtx.currentTime);
                         normalizer.compressor.knee.setValueAtTime(message.knee, normalizer.audioCtx.currentTime);
                         normalizer.compressor.ratio.setValueAtTime(message.ratio, normalizer.audioCtx.currentTime);
